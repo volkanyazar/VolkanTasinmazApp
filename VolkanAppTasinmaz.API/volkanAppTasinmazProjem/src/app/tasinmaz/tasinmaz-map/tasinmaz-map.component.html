@@ -1,0 +1,23 @@
+<div id="map-container" class="map-container">
+    <div id="map" class="map"></div>
+    <div id="mouse-position" class="ol-mouse-position"></div>
+    <div class="coordinate-display">
+      <p><strong> X: </strong> {{ mouseCoordinates.x }} | <strong> Y: </strong> {{ mouseCoordinates.y }} </p>
+    </div>
+    <div class="panel">
+        <!-- OpenStreetMap katmanı için toggle ve opaklık bileşenleri -->
+        <div class="layer-container">
+            <app-layer-toggle [layerName]="'OpenStreetMap'" [layer]="openStreetMapLayer"></app-layer-toggle>
+            <app-layer-opacity [layerName]="'OpenStreetMap'" [layer]="openStreetMapLayer"></app-layer-opacity>
+        </div>
+
+        <!-- Google Maps katmanı için toggle ve opaklık bileşenleri -->
+        <div class="layer-container">
+            <app-layer-toggle [layerName]="'Google Maps'" [layer]="googleMapsLayer"></app-layer-toggle>
+            <app-layer-opacity [layerName]="'Google Maps'" [layer]="googleMapsLayer"></app-layer-opacity>
+        </div>
+
+        <!-- Diğer harita kontrolleri -->
+        <div id="scale-line" class="ol-scale-line-inner"></div>
+    </div>
+</div>

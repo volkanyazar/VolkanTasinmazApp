@@ -1,0 +1,18 @@
+<app-nav *ngIf="isLoggedin()"></app-nav>
+
+<div *ngIf="isLoggedin()" class="col-md-12">
+  <div class="row justify-content-between m-5">
+    <div class="col-md-2">
+      <button class="btn btn-danger btn-lg iptal" (click)="logOut();">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="col-md-3 text-right">
+      <div id="welcome-text-container">
+        <span  id="welcome-text">{{ name }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

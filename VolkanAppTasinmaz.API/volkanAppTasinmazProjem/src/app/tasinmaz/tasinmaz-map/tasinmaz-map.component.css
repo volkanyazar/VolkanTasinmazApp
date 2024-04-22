@@ -1,0 +1,88 @@
+/* Harita konteynerine uygulanan stiller */
+.map-container {
+  width: 50%;
+  margin: auto;
+  border: 2px solid #333; /* Kenarlık rengi ve kalınlığı */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); /* Gölge efekti */
+  position: relative;
+}
+
+
+/* Harita konteynerının içindeki harita divi */
+#map {
+  width: 100%;
+  height: 500px;
+  display: inline-flex;
+  justify-content: center; /* Yatayda ortalama */
+  align-items: center; /* Dikeyde ortalama */
+  background-position: center;
+}
+
+/* Sağ üst köşedeki panel */
+.panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  margin-left: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Paneli sağ üst köşede göstermek için "align-items" kullanın */
+
+  gap: 10px;
+}
+.layer-container {
+  display: flex;
+  flex-direction: column; /* Bileşenleri dikeyde sırala */
+  align-items: flex-start; /* Bileşenleri yatayda sola hizala */
+
+  /* İstediğiniz stillemeleri burada ekleyebilirsiniz */
+}
+
+/* Yazıların stili */
+.app-layer-toggle label,
+.app-layer-opacity label {
+  /* İstediğiniz yazı stili */
+  font-weight: bold;
+}
+
+/* Toggle'ın stili */
+.app-layer-toggle input[type="checkbox"] {
+  /* İstediğiniz toggle stili */
+  margin-left: 20px; /* Yazıdan 5 piksel sağda görünmesini sağlar */
+}
+
+/* Opacity slider'ının stili */
+.app-layer-opacity input[type="range"] {
+  /* İstediğiniz slider stili */
+  width: 100px; /* Genişlik ayarı, istediğiniz kadar büyütebilirsiniz */
+  margin-left: 5px; /* Toggle'dan 5 piksel sağda görünmesini sağlar */
+  align-self: flex-start; /* Opacity bileşenini sola hizala */
+}
+
+
+
+.ol-scale-bar {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 5px 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.coordinate-display {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(79, 51, 116, 0.3); /* 0.5 opaklık (0'dan 1'e ölçek) */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
