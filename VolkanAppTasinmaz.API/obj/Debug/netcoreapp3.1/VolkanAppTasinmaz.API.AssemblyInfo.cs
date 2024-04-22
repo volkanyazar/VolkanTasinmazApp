@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VolkanAppTasinmaz.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+762cf1f679437f0e87cffe5a512745b51535a8a5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+984199790730255a072950a5c7e786d211f94ddb")]
 [assembly: System.Reflection.AssemblyProductAttribute("VolkanAppTasinmaz.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VolkanAppTasinmaz.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
