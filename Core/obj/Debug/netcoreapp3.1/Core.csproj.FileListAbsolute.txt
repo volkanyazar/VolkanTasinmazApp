@@ -1,9 +1,0 @@
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\bin\Debug\netcoreapp3.1\Core.deps.json
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\bin\Debug\netcoreapp3.1\Core.dll
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\bin\Debug\netcoreapp3.1\Core.pdb
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.AssemblyInfoInputs.cache
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.AssemblyInfo.cs
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.csproj.CoreCompileInputs.cache
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.dll
-C:\Users\dunda\source\repos\ConsoleApplication3\ConsoleApplication3\VolkanAppTasinmaz.API\Core\obj\Debug\netcoreapp3.1\Core.pdb
