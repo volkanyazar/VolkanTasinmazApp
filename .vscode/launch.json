@@ -24,7 +24,7 @@
             "serverReadyAction": {
                 "action": "openExternally",
                 "pattern": "Compiled successfully"
-            }
+            },
         }
     ],
     "compounds": [

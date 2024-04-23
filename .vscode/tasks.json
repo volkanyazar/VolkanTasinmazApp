@@ -5,31 +5,25 @@
             "label": "Serve Frontend",
             "type": "shell",
             "command": "npm",
-            "args": [
-                "start"
-            ],
+            "args": ["start"],
             "options": {
                 "cwd": "${workspaceFolder}/VolkanAppTasinmaz.API/ClientApp"
             },
             "isBackground": true,
-            "presentation": {
-                "reveal": "always",
-                "panel": "dedicated"
-            },
             "problemMatcher": {
-                "owner": "custom",
+                "owner": "npm",
                 "pattern": {
-                    "regexp": ".*Compiled successfully.*",
-                    "file": 1,
-                    "location": 2,
-                    "message": 3
+                    "regexp": "^\\s*(.*\\s+)?(error|warning|info)\\s*:\\s*(.*)$",
+                    "severity": 2,
+                    "file": 3,
+                    "message": 4
                 },
                 "background": {
                     "activeOnStart": true,
-                    "beginsPattern": ".*Compiling.*",
-                    "endsPattern": ".*Compiled successfully.*"
+                    "beginsPattern": "^.*\\b(node|npm)\\b.*$",
+                    "endsPattern": "^.*Compiled successfully.*$"
                 }
             }
-        }
+        },
     ]
 }
