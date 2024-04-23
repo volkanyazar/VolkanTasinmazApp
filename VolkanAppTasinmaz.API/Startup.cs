@@ -1,5 +1,6 @@
 using Business.Abstract;
 using Business.Concrete;
+using Business.Profiles;
 using Castle.DynamicProxy;
 using Core.DependencyResolvers;
 using Core.Extensions;
@@ -47,10 +48,15 @@ namespace VolkanAppTasinmaz.API
             services.AddSwaggerGen(c =>
             {
 
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Volkan Tasinmaz API", Version = "v1",Description="Taþýnmaz Projesi"});
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Volkan Tasinmaz API", Version = "v1",Description="Taï¿½ï¿½nmaz Projesi"});
             });
-            //service baðýmlýlýklarý eklendi
-            services.AddSingleton<ITasinmazService, TasinmazManager>();
+
+            services.AddAutoMapper(
+            typeof(TasinmazProfile)
+            );
+            
+            //service baï¿½ï¿½mlï¿½lï¿½klarï¿½ eklendi
+            services.AddScoped<ITasinmazService, TasinmazManager>();
             services.AddSingleton<ITasinmazDal, EfTasinmaz>();
             services.AddSingleton<IIlService, IlManager>();
             services.AddSingleton<IIlDal,EfIl>();
@@ -69,7 +75,8 @@ namespace VolkanAppTasinmaz.API
             services.AddSingleton<ILogService, LogManager>();
 
 
-
+            services.AddDbContext<Context>(options =>
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
 
             var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
@@ -97,7 +104,7 @@ namespace VolkanAppTasinmaz.API
             {
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins("http://localhost:4200") // Angular uygulamanýzýn adresi
+                    builder.WithOrigins("http://localhost:4200") // Angular uygulamanï¿½zï¿½n adresi
                            .AllowAnyHeader()
                            .AllowAnyMethod()
                            .AllowAnyOrigin();

@@ -1,6 +1,7 @@
 ﻿using Core.Utilities;
 using Entities.Concrete;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Entities.Concrete;
 using VolkanAppTasinmaz.API.Entities.DTOs;
 
@@ -8,25 +9,22 @@ namespace VolkanAppTasinmaz.API.Business.Abstract
 {
     public interface ITasinmazService
     {
-        IDataResult<List<Tasinmaz>> GetAll();
+        Task<IDataResult<List<Tasinmaz>>> GetAll();
 
-        IDataResult<List<Log>> GetAllLog();
+        Task<IDataResult<List<Log>>> GetAllLog();
 
-        IDataResult<List<Tasinmaz>> GetListByIl(int Sid);
-        IDataResult<List<TasinmazDetailDto>> GetTasinmazDetails();
+        Task<IDataResult<Tasinmaz>> GetById(int tasinmazId);
 
-        IDataResult<Tasinmaz> GetById(int tasinmazId);
-
-        IDataResult<List<Tasinmaz>> GetByUserId(int userId);
+        Task<IDataResult<List<Tasinmaz>>> GetByUserId(int userId);
 
 
-        IResult Add(Tasinmaz tasinmaz);
+        Task<IResult> Add(Tasinmaz tasinmaz);
 
-        IResult AddLog(Log log);
+        Task<IResult> AddLog(Log log);
 
-        IResult Update(Tasinmaz tasinmaz);
+        Task<IResult> Update(Tasinmaz tasinmaz);
 
-        IResult Delete(int tasinmazId);
+        Task<IResult> Delete(int tasinmazId);
 
     }
 }

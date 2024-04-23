@@ -23,165 +23,95 @@ namespace VolkanAppTasinmaz.API.Controllers
     {
         //private Context _context;
         private readonly ITasinmazService _tasinmazService;
-        private readonly ITasinmazDal _tasinmazDal;
         IUserService _userService;
 
-        public TasinmazController(ITasinmazService productService, ITasinmazDal tasinmazDal, IUserService userService)
+        public TasinmazController(ITasinmazService productService, IUserService userService)
         {
             _tasinmazService = productService;
-            _tasinmazDal = tasinmazDal;
             _userService = userService;
         }
 
-        //[HttpGet("getall")]
-        //public async Task<ActionResult> GetAllTasinmaz()
-        //{
-        //    var result = _tasinmazService.GetAll();
-        //    return Ok(result);
-        //}
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<Tasinmaz>>> GetAll()
         {
-            var values = _tasinmazService.GetAll();
-         
-            if(values.Success)
-                return Ok(values);
-            else
-                return BadRequest(values);  
-
+            return await _tasinmazService.GetAll();
         }
+        
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public async Task<IDataResult<Tasinmaz>> GetById(int tasinmazId)
         {
-            var result = _tasinmazService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _tasinmazService.GetById(tasinmazId);
         }
 
         [HttpGet("getallasc")]
-        public IActionResult GetAllTasinmaz()
+        public async Task<IDataResult<List<Tasinmaz>>> GetAllTasinmaz()
         {
-            var result = _tasinmazDal.GetAllTasinmaz().OrderBy(t => t.TasinmazId);  
-            return Ok(result);
+            return await _tasinmazService.GetAll();
         }
         [HttpPost("add")]
-        public IActionResult Post(Tasinmaz tasinmaz)
+        public async Task<IResult> Add(Tasinmaz tasinmaz)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var user = _userService.GetUserById(id);
-            var result = _tasinmazService.Add(tasinmaz);
-            if (result.Success)
+            await _tasinmazService.AddLog(new Log
             {
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Eklendi",
-                    durum = true,
-                    islemtipi = "Tasınmaz Ekleme İşlemi",
-                    tarih = DateTime.Now,
-                    userid = id,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                return Ok(result);
-            }
-            else
-                return BadRequest(result);
+                aciklama = "Kayıt Eklendi",
+                durum = true,
+                islemtipi = "Tasınmaz Ekleme İşlemi",
+                tarih = DateTime.Now,
+                userid = id,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _tasinmazService.Add(tasinmaz);
         }
+
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteTasinmaz(int id)
+        public async Task<IResult> DeleteTasinmaz(int id)
         {
-            try
-            {
-                var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var user = _userService.GetUserById(id);
-                var tasinmaz = _tasinmazService.GetById(id);
-                if (tasinmaz == null)
-                {
-                    return NotFound(); // Taşınmaz bulunamazsa 404 hatası döndürün.
-                }
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var user = _userService.GetUserById(id);
+            var tasinmaz = _tasinmazService.GetById(id);
 
-                _tasinmazService.Delete(id);
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Silindi ",
-                    durum = true,
-                    islemtipi = "Tasınmaz Silme İşlemi",
-                    tarih = DateTime.Now,
-                    userid = userId,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-
-                });
-                return NoContent(); // Başarılı silme durumunda 204 No Content yanıtı döndürün.
-            }
-            catch (Exception ex)
+            await _tasinmazService.AddLog(new Log
             {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
+                aciklama = "Kayıt Silindi ",
+                durum = true,
+                islemtipi = "Tasınmaz Silme İşlemi",
+                tarih = DateTime.Now,
+                userid = userId,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _tasinmazService.Delete(id);
         }
 
         [HttpPut("update")]
-        public IActionResult Update(Tasinmaz tasinmaz)
+        public async Task<IResult> Update(Tasinmaz tasinmaz)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var user = _userService.GetUserById(id);
-            var result = _tasinmazService.Update(tasinmaz);
-            if (result.Success)
+            await _tasinmazService.AddLog(new Log
             {
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Güncellendi",
-                    durum = true,
-                    islemtipi = "Tasınmaz Güncelleme İşlemi",
-                    tarih = DateTime.Now,
-                    userid = id,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                return Ok(result);
-
-            }
-            else
-                return BadRequest(result);
+                aciklama = "Kayıt Güncellendi",
+                durum = true,
+                islemtipi = "Tasınmaz Güncelleme İşlemi",
+                tarih = DateTime.Now,
+                userid = id,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _tasinmazService.Update(tasinmaz);
         }
 
-        [HttpGet("getlistbyil")]
-        public IActionResult GetListByIl(int Sid)
-        {
-
-            var result = _tasinmazService.GetListByIl(Sid);
-            if (result.Success)
-            {
-                return Ok(result);
-
-            }
-            return BadRequest(result);
-        }
 
         [HttpGet("getalllog")]
-        public IActionResult GetAllLog()
+        public async Task<IDataResult<List<Log>>> GetAllLog()
         {
-
-            var result = _tasinmazService.GetAllLog().Data.OrderByDescending(u => u.logid);
-            // if (result.Success)
-            // {
-            return Ok(result);
-
-            // }
-            //  return BadRequest(result);
+            return await _tasinmazService.GetAllLog();
         }
 
         [HttpGet("getbyuserid")]
-        public IActionResult GetByUserId(int userId)
+        public async Task<IDataResult<List<Tasinmaz>>> GetByUserId(int userId)
         {
-            var result = _tasinmazService.GetByUserId(userId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _tasinmazService.GetByUserId(userId);
         }
     }
 }

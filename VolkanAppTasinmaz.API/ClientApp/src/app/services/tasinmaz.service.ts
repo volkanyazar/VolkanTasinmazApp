@@ -75,7 +75,7 @@ export class TasinmazService {
   }
   
   getTasinmazById(id: number): Observable<Tasinmaz> {
-    return this.httpClient.get<Tasinmaz>(`${this.path}tasinmazlar/getbyid?id=`+id);
+    return this.httpClient.get<Tasinmaz>(`${this.path}tasinmazlar/getbyid?tasinmazId=`+id);
   }
   
   addTasinmaz(tasinmaz:Tasinmaz):Observable<Tasinmaz>{
