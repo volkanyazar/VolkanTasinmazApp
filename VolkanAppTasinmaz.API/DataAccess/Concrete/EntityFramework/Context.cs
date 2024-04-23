@@ -8,6 +8,12 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class Context : DbContext
     {
+        public Context()
+        {
+            Database.Migrate();
+        }
+
+        public Context(DbContextOptions<Context> options) : base(options) { }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
