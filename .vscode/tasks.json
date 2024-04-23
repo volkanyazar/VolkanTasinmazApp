@@ -26,7 +26,7 @@
                 "--open"
             ],
             "options": {
-                "cwd": "${workspaceFolder}/VolkanAppTasinmaz.API/volkanAppTasinmazProjem"
+                "cwd": "${workspaceFolder}/VolkanAppTasinmaz.API/ClientApp"
             },
             "presentation": {
                 "reveal": "always",
