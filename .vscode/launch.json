@@ -5,15 +5,10 @@
             "name": "Launch Backend",
             "type": "coreclr",
             "request": "launch",
-            "preLaunchTask": "Run Backend",
             "program": "${workspaceFolder}/VolkanAppTasinmaz.API/bin/Debug/netcoreapp3.1/VolkanAppTasinmaz.API.dll",
             "args": [],
             "cwd": "${workspaceFolder}/VolkanAppTasinmaz.API",
             "stopAtEntry": false,
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
-            },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
@@ -25,7 +20,11 @@
             "request": "launch",
             "preLaunchTask": "Serve Frontend",
             "url": "http://localhost:4200",
-            "webRoot": "${workspaceFolder}/VolkanAppTasinmaz.API/ClientApp"
+            "webRoot": "${workspaceFolder}/VolkanAppTasinmaz.API/ClientApp",
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "Compiled successfully"
+            }
         }
     ],
     "compounds": [
