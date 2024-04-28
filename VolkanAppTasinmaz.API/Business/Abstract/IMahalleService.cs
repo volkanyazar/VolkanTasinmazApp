@@ -3,16 +3,17 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
     public interface IMahalleService
     {
-        IDataResult<List<Mahalle>> GetAll();
+        Task<IDataResult<List<Mahalle>>> GetAll();
 
-        IDataResult<Mahalle> GetById(int Iid);
-        IDataResult<List<Mahalle>> GetList();
-        IDataResult<List<Mahalle>> GetListByCategory(int categoryId);
+        Task<IDataResult<Mahalle>> GetById(int mahalleId);
+        Task<IDataResult<List<Mahalle>>> GetList();
+        Task<IDataResult<List<Mahalle>>> GetListByCategory(int categoryId);
 
     }
 }

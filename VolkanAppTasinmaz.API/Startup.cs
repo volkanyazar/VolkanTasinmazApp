@@ -1,3 +1,4 @@
+using AutoMapper;
 using Business.Abstract;
 using Business.Concrete;
 using Business.Profiles;
@@ -25,7 +26,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Business.Abstract;
 using VolkanAppTasinmaz.API.Business.Concrete;
-using VolkanAppTasinmaz.API.DataAccess.Abstract;
+using VolkanAppTasinmaz.API.Business.Profiles;
 
 namespace VolkanAppTasinmaz.API
 {
@@ -51,19 +52,15 @@ namespace VolkanAppTasinmaz.API
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Volkan Tasinmaz API", Version = "v1",Description="Ta��nmaz Projesi"});
             });
 
-            services.AddAutoMapper(
-            typeof(TasinmazProfile)
-            );
-            
+            services.
+            AddAutoMapper(typeof(TasinmazProfile),
+                          typeof(IlceProfile));
+
             //service ba��ml�l�klar� eklendi
             services.AddScoped<ITasinmazService, TasinmazManager>();
-            services.AddSingleton<ITasinmazDal, EfTasinmaz>();
-            services.AddSingleton<IIlService, IlManager>();
-            services.AddSingleton<IIlDal,EfIl>();
-            services.AddSingleton<IIlceService, IlceManager>();
-            services.AddSingleton<IIlceDal, EfIlce>();
-            services.AddSingleton<IMahalleService, MahalleManager>();
-            services.AddSingleton<IMahalleDal, EfMahalle>();
+            services.AddScoped<IIlService, IlManager>();
+            services.AddScoped<IIlceService, IlceManager>();
+            services.AddScoped<IMahalleService, MahalleManager>();
             services.AddSingleton<IUserDal, EfUserDal>();
             services.AddSingleton<IUserService, UserManager>();
             services.AddSingleton<IUserOperationClaimDal, EfUserOperationClaim>();
@@ -71,8 +68,7 @@ namespace VolkanAppTasinmaz.API
             services.AddSingleton<IAuthService, AuthManager>();
             services.AddSingleton<ITokenHelper, JwtHelper>();
             services.AddSingleton<IInterceptorSelector, AspectInterceptorSelector>();
-            services.AddSingleton<ILogDal, EfLog>();
-            services.AddSingleton<ILogService, LogManager>();
+            services.AddScoped<ILogService, LogManager>();
 
 
             services.AddDbContext<Context>(options =>

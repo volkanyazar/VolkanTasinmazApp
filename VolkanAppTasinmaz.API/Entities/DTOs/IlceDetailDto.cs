@@ -7,8 +7,8 @@ namespace VolkanAppTasinmaz.API.Entities.DTOs
 {
     public class IlceDetailDto : IDto
     {
-        public int Iid { get; set; }
-        public string Iname { get; set; }
-        public int SId { get; set; }
+        public int IlceId { get; set; }
+        public string IlceAdi { get; set; }
+        public int IlId { get; set; }
     }
 }

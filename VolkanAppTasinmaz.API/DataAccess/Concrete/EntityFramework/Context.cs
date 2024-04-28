@@ -10,7 +10,7 @@ namespace DataAccess.Concrete.EntityFramework
     {
         public Context()
         {
-            Database.Migrate();
+            // Database.Migrate();
         }
 
         public Context(DbContextOptions<Context> options) : base(options) { }

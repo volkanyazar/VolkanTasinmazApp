@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using VolkanAppTasinmaz.API.Core.Entities.Concrete;
-using VolkanAppTasinmaz.API.DataAccess.Abstract;
 using VolkanAppTasinmaz.API.Entities.DTOs;
 
 namespace Business.Concrete

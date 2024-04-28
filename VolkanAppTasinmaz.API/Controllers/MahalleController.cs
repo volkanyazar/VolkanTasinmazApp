@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Utilities;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,46 +14,24 @@ namespace WebAPI.Controllers
     [ApiController]
     public class MahalleController : ControllerBase
     {
-
-
         private IMahalleService _mahalleService;
         public MahalleController(IMahalleService sehirService)
         {
             _mahalleService = sehirService;
         }
 
-        [HttpGet("getlistbycategory")]
-        public IActionResult GetListByCategory(int categoryId)
-        {
-            var result = _mahalleService.GetListByCategory(categoryId);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest(result.Message);
-        }
-
-
-
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<Mahalle>>> GetAll()
         {
 
-            var result = _mahalleService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result.Message);
+            return await _mahalleService.GetAll();
         }
 
-
-
-
-
-
+        [HttpGet("getlistbycategory")]
+        public async Task<IDataResult<List<Mahalle>>> GetListByCategory(int categoryId)
+        {
+            return await _mahalleService.GetListByCategory(categoryId);
+        }
 
     }
 }

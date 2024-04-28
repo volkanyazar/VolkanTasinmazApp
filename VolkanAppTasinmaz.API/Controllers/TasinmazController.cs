@@ -12,8 +12,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Business.Abstract;
 using VolkanAppTasinmaz.API.Business.Concrete;
-using VolkanAppTasinmaz.API.DataAccess.Abstract;
 using VolkanAppTasinmaz.API.Entities.Concrete;
+using VolkanAppTasinmaz.API.Entities.DTOs;
 
 namespace VolkanAppTasinmaz.API.Controllers
 {

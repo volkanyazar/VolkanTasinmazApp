@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Core.Utilities;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,24 +14,16 @@ namespace WebAPI.Controllers
     [ApiController]
     public class IlController : ControllerBase
     {
-
-        private IIlService _ilService;
+        private readonly IIlService _ilService;
         public IlController(IIlService ilService)
         {
             _ilService = ilService;
         }
 
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<Il>>> GetAll()
         {
-
-            var result = _ilService.GetAll();
-            if (result.Success)
-            {
-              return Ok(result);
-            }
-
-            return BadRequest(result.Message);
+            return await _ilService.GetAll();
         }
 
 

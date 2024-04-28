@@ -3,6 +3,7 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
@@ -10,6 +11,6 @@ namespace Business.Abstract
 
 
     {
-        IDataResult<List<Il>> GetAll();
+        Task<IDataResult<List<Il>>> GetAll();
     }
 }
