@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Business.Abstract;
-using VolkanAppTasinmaz.API.DataAccess.Abstract;
 using VolkanAppTasinmaz.API.Entities.Concrete;
 using VolkanAppTasinmaz.API.Entities.DTOs;
 
@@ -22,9 +21,10 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
         private readonly Context _context;
         private readonly IMapper _mapper;
 
-        public TasinmazManager(Context context)
+        public TasinmazManager(Context context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         [ValidationAspect(typeof(TasinmazValidator))]
 
@@ -129,21 +129,10 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
         {
             try
             {
-                var tasinmazData = await _context.Tasinmazlar.Include(x => x.User).Include(x => x.Mahalle).ThenInclude(x => x.Ilce).ThenInclude(x => x.Il).FirstOrDefaultAsync(k => k.TasinmazId == tasinmaz.TasinmazId);
+                var tasinmazData = await _context.Tasinmazlar.FirstOrDefaultAsync(k => k.TasinmazId == tasinmaz.TasinmazId);
                 if (tasinmazData != null)
                 {
-                    tasinmazData.Ada = tasinmaz.Ada;
-                    tasinmazData.Adres = tasinmaz.Adres;
-                    tasinmazData.coorX = tasinmaz.coorX;
-                    tasinmazData.coorY = tasinmaz.coorY;
-                    tasinmazData.Il = tasinmaz.Il;
-                    tasinmazData.Ilce = tasinmaz.Ilce;
-                    tasinmazData.MahalleId = tasinmaz.MahalleId;
-                    tasinmazData.Nitelik = tasinmaz.Nitelik;
-                    tasinmazData.Parsel = tasinmaz.Parsel;
-                    tasinmazData.TasinmazId = tasinmaz.TasinmazId;
-                    tasinmazData.UserId = tasinmaz.UserId;
-
+                    _mapper.Map(tasinmaz, tasinmazData);
                     _context.Update(tasinmazData);
                     await _context.SaveChangesAsync();
                     return new SuccessResult("Taşınmaz Başarıyla Güncellendi...");
@@ -158,5 +147,6 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
                 return new ErrorResult("Taşınmaz Güncelleme Başarısız: Hata Mesajı : " + e.Message);
             }
         }
+
     }
 }

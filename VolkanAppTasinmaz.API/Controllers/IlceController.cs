@@ -1,11 +1,14 @@
 ﻿using Business.Abstract;
+using Core.Utilities;
 using DataAccess.Abstract;
+using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VolkanAppTasinmaz.API.Entities.DTOs;
 
 namespace WebAPI.Controllers
 {
@@ -13,52 +16,35 @@ namespace WebAPI.Controllers
     [ApiController]
     public class IlceController : ControllerBase
     {
-
-
-        private IIlceService _ilceService;
-        private readonly IIlceDal _ilceDalReposity;
-        public IlceController(IIlceService sehirService, IIlceDal ilceDalReposity)
+        private readonly IIlceService _ilceService;
+        public IlceController(IIlceService sehirService)
         {
             _ilceService = sehirService;
-            _ilceDalReposity = ilceDalReposity;
         }
 
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<Ilce>>> GetAll()
         {
 
-            var result = _ilceService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-
-            }
-            return BadRequest(result);
+            return await _ilceService.GetAll();
         }
 
-
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public async Task<IDataResult<Ilce>> GetById(int ilceId)
         {
-            var result = _ilceService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-
-            return BadRequest(result.Message);
+            return await _ilceService.GetById(ilceId);
         }
 
         [HttpGet("getlistbycategory")]
-        public IActionResult GetListByCategory(int categoryId)
+        public async Task<IDataResult<List<Ilce>>> GetListByCategory(int categoryId)
         {
-            var result = _ilceService.GetListByCategory(categoryId);
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
+            return await _ilceService.GetListByCategory(categoryId);
+        }
 
-            return BadRequest(result.Message);
+        [HttpGet("getIlceDetails")]
+        public async Task<IDataResult<List<IlceDetailDto>>> GetIlceDetails()
+        {
+            return await _ilceService.GetIlceDetails();
         }
     }
 }

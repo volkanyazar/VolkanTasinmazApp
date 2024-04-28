@@ -1,53 +1,108 @@
-﻿using Business.Abstract;
+﻿using AutoMapper;
+using Business.Abstract;
 using Core.Utilities;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using VolkanAppTasinmaz.API.DataAccess.Abstract;
+using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Entities.DTOs;
 
 namespace Business.Concrete
 {
     public class IlceManager : IIlceService
     {
-        IIlceDal _ilceDal;
+        private readonly Context _context;
+        private readonly IMapper _mapper;
 
-        public IlceManager(IIlceDal ilceDal)
+        public IlceManager(Context context, IMapper mapper)
         {
-            _ilceDal = ilceDal;
+            _context = context;
+            _mapper = mapper;
         }
-        public IDataResult<List<Ilce>> GetAll()
+        public async Task<IDataResult<List<Ilce>>> GetAll()
         {
-            return new SuccessDataResult<List<Ilce>>(_ilceDal. GetAll(), "İlçeler Başarıyla Listelendi");
-        }
-
-        public IDataResult<Ilce> GetById(int Iid)
-        {
-            return new SuccessDataResult<Ilce>(_ilceDal.Get(p => p.IlceId == Iid));
-        }
-
-        public IDataResult<List<Ilce>> GetByIlID(int id)
-        {
-            return new SuccessDataResult<List<Ilce>>(_ilceDal.GetAll(c => c.IlId == id));
-        }
-
-        public IDataResult<List<Ilce>> GetList()
-        {
-            
-            return new SuccessDataResult<List<Ilce>>(_ilceDal.GetList().ToList());
+            try
+            {
+                var tempList = await _context.Ilce.Include(x => x.Il).OrderBy(x => x.IlceId).ToListAsync();
+                return new SuccessDataResult<List<Ilce>>(tempList, "llçeler Başarıyla Listelendi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<Ilce>>(null, "İlçeler Listeleme Başarısız: Hata Mesajı: " + e.Message);
+            }
         }
 
-        public IDataResult<List<Ilce>> GetListByCategory(int categoryId)
+        public async Task<IDataResult<Ilce>> GetById(int ilceId)
         {
-            return new SuccessDataResult<List<Ilce>>(_ilceDal.GetList(p => p.IlId == categoryId).ToList());
+            try
+            {
+                var tempData = await _context.Ilce.Include(x => x.Il).Where(x => x.IlceId == ilceId).FirstOrDefaultAsync();
+                return new SuccessDataResult<Ilce>(tempData, "İlçe Bilgileri Başarıyla Getirildi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<Ilce>(null, "İlçe Getirme Başarısız: Hata Mesajı: " + e.Message);
+            }
         }
 
-        public IDataResult<List<IlceDetailDto>> GetIlceDetails()
+        public async Task<IDataResult<Ilce>> GetByIlId(int ilId)
         {
-            return new SuccessDataResult<List<IlceDetailDto>>(_ilceDal.GetIlceDetails());
+            try
+            {
+                var tempData = await _context.Ilce.Include(x => x.Il).Where(x => x.IlId == ilId).FirstOrDefaultAsync();
+                return new SuccessDataResult<Ilce>(tempData, "İlçe Bilgileri Başarıyla Getirildi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<Ilce>(null, "İlçe Getirme Başarısız: Hata Mesajı: " + e.Message);
+            }
+        }
+
+        public async Task<IDataResult<List<Ilce>>> GetList()
+        {
+            try
+            {
+                var tempList = await _context.Ilce.Include(x => x.Il).OrderBy(x => x.IlceId).ToListAsync();
+                return new SuccessDataResult<List<Ilce>>(tempList, "llçeler Başarıyla Listelendi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<Ilce>>(null, "İlçeler Listeleme Başarısız: Hata Mesajı: " + e.Message);
+            }
+        }
+
+        public async Task<IDataResult<List<Ilce>>> GetListByCategory(int categoryId)
+        {
+            try
+            {
+                var tempData = await _context.Ilce.Include(x => x.Il).Where(x => x.IlId == categoryId).ToListAsync();
+                return new SuccessDataResult<List<Ilce>>(tempData, "İlçe Bilgileri Başarıyla Getirildi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<Ilce>>(null, "İlçe Getirme Başarısız: Hata Mesajı: " + e.Message);
+            }
+        }
+
+        public async Task<IDataResult<List<IlceDetailDto>>> GetIlceDetails()
+        {
+            try
+            {
+                // var tempData = await _context.Ilce.Include(x => x.Il).Select(u => new IlceDetailDto { IlceId = u.IlceId, IlceAdi = u.IlceName, IlId = u.IlId }).ToListAsync();
+                var tempData = _context.Ilce.Include(x => x.Il);
+                var ilceDetailsData = await _mapper.ProjectTo<IlceDetailDto>(tempData).ToListAsync();
+
+                return new SuccessDataResult<List<IlceDetailDto>>(ilceDetailsData, "İlçeler Detay Bilgileri Başarıyla Getirildi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<IlceDetailDto>>(null, "İlçeler Detay Getirme Başarısız: Hata Mesajı: " + e.Message);
+            }
         }
 
     }

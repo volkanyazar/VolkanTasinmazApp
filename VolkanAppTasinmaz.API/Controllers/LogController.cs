@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities;
 using Entities.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,7 @@ namespace WebAPI.Controllers
     [ApiController]
     public class LogController : ControllerBase
     {
-        ILogService _logService;
+        private readonly ILogService _logService;
 
         public LogController(ILogService logService)
         {
@@ -21,15 +22,15 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<Log>>> GetAll()
         {
-            var values = _logService.GetAll();
+            return await _logService.GetAll();
+        }
 
-            if (values.Success)
-                return Ok(values);
-            else
-                return BadRequest(values);
-
+        [HttpPost("add")]
+        public async Task<IResult> Add(Log log)
+        {
+            return await _logService.Add(log);
         }
     }
-    }
+}

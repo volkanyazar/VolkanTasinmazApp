@@ -3,21 +3,22 @@ using Entities.Concrete;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Entities.DTOs;
 
 namespace Business.Abstract
 {
     public interface IIlceService
     {
-        IDataResult<List<Ilce>> GetAll();
+        Task<IDataResult<List<Ilce>>> GetAll();
 
-        IDataResult<Ilce> GetById(int Iid);
-        IDataResult<List<Ilce>> GetList();
-        IDataResult<List<IlceDetailDto>> GetIlceDetails();
+        Task<IDataResult<Ilce>> GetById(int ilceId);
+        Task<IDataResult<List<Ilce>>> GetList();
+        Task<IDataResult<List<IlceDetailDto>>> GetIlceDetails();
 
-        IDataResult<List<Ilce>> GetListByCategory(int categoryId);
+        Task<IDataResult<List<Ilce>>> GetListByCategory(int categoryId);
 
-        IDataResult<List<Ilce>> GetByIlID(int id);
+        Task<IDataResult<Ilce>> GetByIlId(int ilId);
 
     }
 }

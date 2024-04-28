@@ -1,32 +1,55 @@
-﻿using Business.Abstract;
+﻿using AutoMapper;
+using Business.Abstract;
 using Core.Utilities;
 using DataAccess.Abstract;
+using DataAccess.Concrete.EntityFramework;
 using Entities.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Business.Concrete
 {
     public class LogManager : ILogService
     {
-        ILogDal _logDal;
+        private readonly Context _context;
+        private readonly IMapper _mapper;
 
-        public LogManager(ILogDal logDal)
+        public LogManager(Context context, IMapper mapper)
         {
-            _logDal = logDal;
-        }
-        public IResult Add(Log log)
-        {              
-
-            _logDal.Add(log);
-            return new SuccessResult("Log Başarıyla Eklendi");
-
+            _context = context;
+            _mapper = mapper;
         }
 
-        public IDataResult<List<Log>> GetAll()
+        public async Task<IDataResult<List<Log>>> GetAll()
         {
-            return new SuccessDataResult<List<Log>>(_logDal.GetAll(), "Log Kayıtları Başarıyla Listelendi...");
+            try
+            {
+                var tempList = await _context.Log.OrderByDescending(x => x.logid).ToListAsync();
+                return new SuccessDataResult<List<Log>>(tempList, "Loglar Başarıyla Listelendi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorDataResult<List<Log>>(null, "Loglar Listeleme Başarısız: Hata Mesajı: " + e.Message);
+            }
+
+        }
+
+        public async Task<IResult> Add(Log log)
+        {
+            try
+            {
+                await _context.Log.AddAsync(log);
+                await _context.SaveChangesAsync();
+                return new SuccessResult("Log Başarıyla Eklendi");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult("Log Ekleme Başarısız: Hata Mesajı : " + e.Message);
+            }
 
         }
     }
