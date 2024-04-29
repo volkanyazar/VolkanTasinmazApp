@@ -76,26 +76,32 @@ export class TasinmazComponent implements OnInit {
 
   loadTasinmazlar(){
     this.tasinmazService.getTasinmazByUserId(this.userId).subscribe(
-      (data) => {
-        this.tasinmazlar = data["data"];
-        
-        console.log('Tüm veriler:', this.tasinmazlar);
-        this.tasinmazlar.sort((a, b) => a.tasinmazId - b.tasinmazId);
+      (res) => {
+        if (res.success == true) {
+          this.tasinmazlar = res.data;
 
-        this.updatePagedTasinmazlar();
-    this.tasinmazlar.forEach((tasinmaz) => {
-      if (tasinmaz.coorX !== null && tasinmaz.coorY !== null) {
-        
-      // sfr:147258. <=
-        this.tasinmazService.setTasinmazLength(this.tasinmazlar.length);
-        this.mapComponent.markTasinmazAtCoordinates([parseFloat(tasinmaz.coorX), parseFloat(tasinmaz.coorY)]);      }
-    });
-        this.mapComponent.toggleMapMarking();
-        this.selectedTasinmazlar = this.tasinmazService.getSelectedTasinmazlar();
-        console.log('Seçili Taşınmazlar:', this.selectedTasinmazlar);
-      },
-      (error) => {
-        console.error('Veri alınamadı:', error);
+          console.log("Tüm veriler:", this.tasinmazlar);
+          this.tasinmazlar.sort((a, b) => a.tasinmazId - b.tasinmazId);
+
+          this.updatePagedTasinmazlar();
+          this.tasinmazlar.forEach((tasinmaz) => {
+            if (tasinmaz.coorX !== null && tasinmaz.coorY !== null) {
+              // sfr:147258. <=
+              this.tasinmazService.setTasinmazLength(this.tasinmazlar.length);
+              this.mapComponent.markTasinmazAtCoordinates([
+                parseFloat(tasinmaz.coorX),
+                parseFloat(tasinmaz.coorY),
+              ]);
+            }
+          });
+          this.mapComponent.toggleMapMarking();
+          this.selectedTasinmazlar =
+            this.tasinmazService.getSelectedTasinmazlar();
+          console.log("Seçili Taşınmazlar:", this.selectedTasinmazlar);
+        }else{
+          this.alertifyService.error('Tablo Verileri getirilirken Hata Oluştu.');
+          console.log(res.message);
+        }
       }
     );
   }

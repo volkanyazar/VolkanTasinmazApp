@@ -55,7 +55,7 @@ export class TasinmazAddComponent implements OnInit {
 onIlChange() {
   const selectedIl = this.tasinmazForm.get('il').value;
   this.tasinmazService.getIlcelerByIlId(selectedIl).subscribe(ilceler => {
-    this.ilceler = ilceler;
+    this.ilceler = ilceler["data"];
   });
 }
 
@@ -63,7 +63,7 @@ onIlChange() {
 onIlceChange() {
   const selectedIlce = this.tasinmazForm.get('ilce').value;
   this.tasinmazService.getMahallelerByIlceId(selectedIlce).subscribe(mahalleler => {
-    this.mahalleler = mahalleler;
+    this.mahalleler = mahalleler["data"];
   });
 }
 
