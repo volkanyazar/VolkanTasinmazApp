@@ -1,3 +1,4 @@
+import { IDataResult } from './../baseresponse/IDataResult';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
@@ -40,8 +41,8 @@ export class TasinmazService {
   }
   path = "https://localhost:5001/api/";
 
-  getAll(): Observable<Tasinmaz[]> {
-    return this.httpClient.get<Tasinmaz[]>(this.path + "tasinmazlar/getall");
+  getAll(): Observable<IDataResult<Tasinmaz[]>> {
+    return this.httpClient.get<IDataResult<Tasinmaz[]>>(this.path + "tasinmazlar/getall");
   }
 
   getAllLinq(): Observable<Tasinmaz[]> {
@@ -49,8 +50,8 @@ export class TasinmazService {
   }
 
 
-  getTasinmazByUserId(userId:number): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.path + "tasinmazlar/getbyuserid?userId="+userId);
+  getTasinmazByUserId(userId:number): Observable<IDataResult<Tasinmaz[]>> {
+    return this.httpClient.get<IDataResult<Tasinmaz[]>>(this.path + "tasinmazlar/getbyuserid?userId="+userId);
   }
 
   getIller(): Observable<Il[]> {

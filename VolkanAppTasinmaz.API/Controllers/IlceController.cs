@@ -17,9 +17,9 @@ namespace WebAPI.Controllers
     public class IlceController : ControllerBase
     {
         private readonly IIlceService _ilceService;
-        public IlceController(IIlceService sehirService)
+        public IlceController(IIlceService ilceService)
         {
-            _ilceService = sehirService;
+            _ilceService = ilceService;
         }
 
         [HttpGet("getall")]
