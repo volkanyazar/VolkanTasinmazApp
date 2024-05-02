@@ -21,175 +21,101 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        ITasinmazService _tasinmazService;
-        IUserService _userService;
-        IUserOperationClaimService _userOperationClaimService;
-        public UserController(IUserService userService, ITasinmazService productService, IUserOperationClaimService userOperationClaimService)
+        private readonly ITasinmazService _tasinmazService;
+        private readonly IUserService _userService;
+        public UserController(IUserService userService, ITasinmazService productService)
         {
             _userService = userService;
             _tasinmazService = productService;
-            _userOperationClaimService = userOperationClaimService; 
-
         }
 
         [HttpGet("getall")]
-        public IActionResult GetAll()
+        public async Task<IDataResult<List<User>>> GetAll()
         {
-
-            var result = _userService.GetAll().Data.OrderByDescending(u=>u.UserId);
-            //if (result.Success)
-            // {
-            return Ok(result);
-            //}
-           // return BadRequest(result);
+            return await _userService.GetAll();
         }
+
         [HttpDelete("delete/{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IResult> DeleteUser(int id)
         {
-            try
+            var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await _tasinmazService.AddLog(new Log
             {
-                var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-                var userX = _userService.GetUserById(id);
-                var userToDelete = _userService.GetById(id);
-                if (userToDelete == null)
-                {
-                    return NotFound(); // Taşınmaz bulunamazsa 404 hatası döndürün.
-                }
-
-                _userService.Delete(id);
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Silindi",
-                    durum = true,
-                    islemtipi = "Kullanıcı Silme İşlemi",
-                    tarih = DateTime.Now,
-                    userid = userId,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                _userOperationClaimService.DeleteUserClaim(userToDelete.Data.UserId);
-                return NoContent(); // Başarılı silme durumunda 204 No Content yanıtı döndürün.
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal Server Error: {ex.Message}");
-            }
+                aciklama = "Kayıt Silindi",
+                durum = true,
+                islemtipi = "Kullanıcı Silme İşlemi",
+                tarih = DateTime.Now,
+                userid = userId,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _userService.Delete(id);
         }
-
 
         [HttpPost("delete")]
-        public IActionResult Delete(User tasinmaz)
+        public async Task<IResult> Delete(User user)
         {
-
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(id);
-
-            var result = _userService.Delete(tasinmaz);
-            if (result.Success)
+            await _tasinmazService.AddLog(new Log
             {
-                _userOperationClaimService.DeleteUserClaim(tasinmaz.UserId);
-
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Silindi",
-                    durum = true,
-                    islemtipi = "Kullanıcı Silme İşlemi Spesifik",
-                    tarih = DateTime.Now,
-                    userid = id,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                return Ok(result.Message);
-            }
-
-            return BadRequest(result.Message);
+                aciklama = "Kayıt Silindi",
+                durum = true,
+                islemtipi = "Kullanıcı Silme İşlemi Spesifik",
+                tarih = DateTime.Now,
+                userid = id,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _userService.Delete(user);
         }
 
         [HttpPut("update")]
-        public IActionResult Update(User user)
+        public async Task<IResult> Update(User user)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userDatas = _userService.GetUserById(id);
-            var result = _userService.Update(user);
-            if (result.Success)
+            await _tasinmazService.AddLog(new Log
             {
-                var updatedUserData = _userOperationClaimService.GetOperationClaimByUserId(user.UserId).Data;
-
-                updatedUserData.UserId = user.UserId;
-                updatedUserData.OperationClaimId = user.Role == "Admin" ? 1 : 2;
-                _userOperationClaimService.UpdateUserClaim(updatedUserData);
-               
-
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Güncellendi",
-                    durum = true,
-                    islemtipi = "Kullanıcı Güncelleme İşlemi",
-                    tarih = DateTime.Now,
-                    userid = id,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+                aciklama = "Kayıt Güncellendi",
+                durum = true,
+                islemtipi = "Kullanıcı Güncelleme İşlemi",
+                tarih = DateTime.Now,
+                userid = id,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _userService.Update(user);
         }
 
         [HttpPost("updateuser")]
-        public IActionResult UpdateUser(UserUpdateDto userUpdateDto)
+        public async Task<IResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(userUpdateDto.UserId);
-            var result = _userService.UpdateUser(userUpdateDto);
-
-         
-            if (result.Success)
+            await _tasinmazService.AddLog(new Log
             {
-                var updatedUserData = _userOperationClaimService.GetOperationClaimByUserId(user.UserId).Data;
-                updatedUserData.UserId = user.UserId;
-                updatedUserData.OperationClaimId = user.Role == "Admin" ? 1 : 2;
-                _userOperationClaimService.UpdateUserClaim(updatedUserData);
-
-                _tasinmazService.AddLog(new Log
-                {
-                    aciklama = "Kayıt Güncellendi",
-                    durum = true,
-                    islemtipi = "Kullanıcı Güncelleme İşlemi Spesifik",
-                    tarih = DateTime.Now,
-                    userid = id,
-                    logip = HttpContext.Connection.RemoteIpAddress?.ToString()
-                });
-                return Ok(result);
-            }
-            return BadRequest(result);
+                aciklama = "Kayıt Güncellendi",
+                durum = true,
+                islemtipi = "Kullanıcı Güncelleme İşlemi Spesifik",
+                tarih = DateTime.Now,
+                userid = id,
+                logip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+            return await _userService.UpdateUser(userUpdateDto);
         }
-
-
 
         [HttpGet("getbyid")]
-        public IActionResult GetById(int id)
+        public async Task<IDataResult<User>> GetById(int userId)
         {
-            var result = _userService.GetById(id);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userService.GetById(userId);
         }
+
         [HttpPost("add")]
-        public IActionResult Post(User user)
+        public async Task<IResult> Add(User user)
         {
-            _userService.Add(user);
-                return Ok(user);
+            return await _userService.Add(user);
         }
 
         [HttpGet("getbyidlogin")]
-        public IActionResult GetByIdLogin()
+        public async Task<IDataResult<User>> GetByIdLogin()
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(id);
-            return Ok(user);
+            return await _userService.GetUserById(id);
         }
-
-
     }
 }

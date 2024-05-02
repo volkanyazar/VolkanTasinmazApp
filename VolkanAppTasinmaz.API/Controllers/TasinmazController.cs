@@ -21,9 +21,8 @@ namespace VolkanAppTasinmaz.API.Controllers
     [ApiController]
     public class TasinmazController : ControllerBase
     {
-        //private Context _context;
         private readonly ITasinmazService _tasinmazService;
-        IUserService _userService;
+        private readonly IUserService _userService;
 
         public TasinmazController(ITasinmazService productService, IUserService userService)
         {
@@ -52,7 +51,7 @@ namespace VolkanAppTasinmaz.API.Controllers
         public async Task<IResult> Add(Tasinmaz tasinmaz)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserById(id);
             await _tasinmazService.AddLog(new Log
             {
                 aciklama = "Kayıt Eklendi",
@@ -69,7 +68,7 @@ namespace VolkanAppTasinmaz.API.Controllers
         public async Task<IResult> DeleteTasinmaz(int id)
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserById(id);
             var tasinmaz = _tasinmazService.GetById(id);
 
             await _tasinmazService.AddLog(new Log
@@ -88,7 +87,7 @@ namespace VolkanAppTasinmaz.API.Controllers
         public async Task<IResult> Update(Tasinmaz tasinmaz)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var user = _userService.GetUserById(id);
+            var user = await _userService.GetUserById(id);
             await _tasinmazService.AddLog(new Log
             {
                 aciklama = "Kayıt Güncellendi",

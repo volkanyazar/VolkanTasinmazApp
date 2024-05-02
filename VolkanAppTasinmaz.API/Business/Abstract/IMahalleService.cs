@@ -10,10 +10,8 @@ namespace Business.Abstract
     public interface IMahalleService
     {
         Task<IDataResult<List<Mahalle>>> GetAll();
-
         Task<IDataResult<Mahalle>> GetById(int mahalleId);
         Task<IDataResult<List<Mahalle>>> GetList();
         Task<IDataResult<List<Mahalle>>> GetListByCategory(int categoryId);
-
     }
 }

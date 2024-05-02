@@ -11,14 +11,10 @@ namespace Business.Abstract
     public interface IIlceService
     {
         Task<IDataResult<List<Ilce>>> GetAll();
-
         Task<IDataResult<Ilce>> GetById(int ilceId);
         Task<IDataResult<List<Ilce>>> GetList();
         Task<IDataResult<List<IlceDetailDto>>> GetIlceDetails();
-
         Task<IDataResult<List<Ilce>>> GetListByCategory(int categoryId);
-
         Task<IDataResult<Ilce>> GetByIlId(int ilId);
-
     }
 }

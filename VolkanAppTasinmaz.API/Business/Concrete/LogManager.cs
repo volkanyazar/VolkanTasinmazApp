@@ -7,6 +7,7 @@ using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,6 @@ namespace Business.Concrete
             _context = context;
             _mapper = mapper;
         }
-
         public async Task<IDataResult<List<Log>>> GetAll()
         {
             try
@@ -35,24 +35,25 @@ namespace Business.Concrete
             {
                 return new ErrorDataResult<List<Log>>(null, "Loglar Listeleme Başarısız: Hata Mesajı: " + e.Message);
             }
-
         }
 
         public async Task<IResult> Add(Log log)
         {
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
             {
-                await _context.Log.AddAsync(log);
-                await _context.SaveChangesAsync();
-                return new SuccessResult("Log Başarıyla Eklendi");
+                try
+                {
+                    await _context.Log.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return new SuccessResult("Log Başarıyla Eklendi");
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    return new ErrorResult("Log Ekleme Başarısız: Hata Mesajı : " + e.Message);
+                }
             }
-            catch (Exception e)
-            {
-                return new ErrorResult("Log Ekleme Başarısız: Hata Mesajı : " + e.Message);
-            }
-
         }
     }
-
-
 }

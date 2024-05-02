@@ -4,6 +4,7 @@ import { Observable, throwError } from 'rxjs';
 import { User } from '../models/user';
 import { catchError, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { IDataResult } from '../baseresponse/IDataResult';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +15,12 @@ export class UserService {
   constructor(private httpClient: HttpClient,private authService:AuthService) { }
   path = "https://localhost:5001/api/";
 
-  getAll(): Observable<User[]> {
-    return this.httpClient.get<User[]>(this.path + "users/getall");
+  getAll(): Observable<IDataResult<User[]>> {
+    return this.httpClient.get<IDataResult<User[]>>(this.path + "users/getall");
   }
 
   getUserById(id: number): Observable<User> {
-    return this.httpClient.get<User>(`${this.path}users/getbyid?id=`+id);
+    return this.httpClient.get<User>(`${this.path}users/getbyid?userId=`+id);
   }
   
   //addUser <-- register ile ekliyoruz şimdilik aktif değil

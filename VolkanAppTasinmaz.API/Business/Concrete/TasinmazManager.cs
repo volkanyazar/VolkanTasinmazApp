@@ -8,6 +8,7 @@ using Entities.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using VolkanAppTasinmaz.API.Business.Abstract;
@@ -30,49 +31,65 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
 
         public async Task<IResult> Add(Tasinmaz tasinmaz)
         {
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
             {
-                await _context.Tasinmazlar.AddAsync(tasinmaz);
-                await _context.SaveChangesAsync();
-                return new SuccessResult("Taşınmaz Başarıyla Eklendi");
-            }
-            catch (Exception e)
-            {
-                return new ErrorResult("Taşınmaz Ekleme Başarısız: Hata Mesajı : " + e.Message);
+                try
+                {
+                    await _context.Tasinmazlar.AddAsync(tasinmaz);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return new SuccessResult("Taşınmaz Başarıyla Eklendi");
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    return new ErrorResult("Taşınmaz Ekleme Başarısız: Hata Mesajı : " + e.Message);
+                }
             }
         }
 
         public async Task<IResult> AddLog(Log log)
         {
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
             {
-                await _context.Log.AddAsync(log);
-                await _context.SaveChangesAsync();
-                return new SuccessResult("Taşınmaz Log Eklendi");
-            }
-            catch (Exception e)
-            {
-                return new ErrorResult("Taşınmaz Log Ekleme Başarısız: Hata Mesajı : " + e.Message);
+                try
+                {
+                    await _context.Log.AddAsync(log);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return new SuccessResult("Taşınmaz Log Eklendi");
+                }
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    return new ErrorResult("Taşınmaz Log Ekleme Başarısız: Hata Mesajı : " + e.Message);
+                }
             }
         }
 
         public async Task<IResult> Delete(int tasinmazId)
         {
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
             {
-                var tasinmazToDelete = await _context.Tasinmazlar.Include(x => x.User).Include(x => x.Mahalle).ThenInclude(x => x.Ilce).ThenInclude(x => x.Il).Where(x => x.TasinmazId == tasinmazId).FirstOrDefaultAsync();
-
-                if (tasinmazToDelete == null)
+                try
                 {
-                    return new ErrorResult("Taşınmaz Bulunamadı");
+                    var tasinmazToDelete = await _context.Tasinmazlar.Include(x => x.User).Include(x => x.Mahalle).ThenInclude(x => x.Ilce).ThenInclude(x => x.Il).Where(x => x.TasinmazId == tasinmazId).FirstOrDefaultAsync();
+
+                    if (tasinmazToDelete == null)
+                    {
+                        await transaction.RollbackAsync();
+                        return new ErrorResult("Taşınmaz Bulunamadı");
+                    }
+                    _context.Tasinmazlar.Remove(tasinmazToDelete);
+                    await _context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+                    return new SuccessResult("Taşınmaz Başarıyla Silindi...");
                 }
-                _context.Tasinmazlar.Remove(tasinmazToDelete);
-                await _context.SaveChangesAsync();
-                return new SuccessResult("Taşınmaz Başarıyla Silindi...");
-            }
-            catch (Exception e)
-            {
-                return new ErrorResult("Taşınmaz Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
+                catch (Exception e)
+                {
+                    await transaction.RollbackAsync();
+                    return new ErrorResult("Taşınmaz Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
+                }
             }
         }
 
@@ -127,24 +144,30 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
         }
         public async Task<IResult> Update(Tasinmaz tasinmaz)
         {
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
             {
-                var tasinmazData = await _context.Tasinmazlar.FirstOrDefaultAsync(k => k.TasinmazId == tasinmaz.TasinmazId);
-                if (tasinmazData != null)
+                try
                 {
-                    _mapper.Map(tasinmaz, tasinmazData);
-                    _context.Update(tasinmazData);
-                    await _context.SaveChangesAsync();
-                    return new SuccessResult("Taşınmaz Başarıyla Güncellendi...");
+                    var tasinmazData = await _context.Tasinmazlar.FirstOrDefaultAsync(k => k.TasinmazId == tasinmaz.TasinmazId);
+                    if (tasinmazData != null)
+                    {
+                        _mapper.Map(tasinmaz, tasinmazData);
+                        _context.Update(tasinmazData);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return new SuccessResult("Taşınmaz Başarıyla Güncellendi...");
+                    }
+                    else
+                    {
+                        await transaction.RollbackAsync();
+                        return new ErrorResult("Güncelleme için belirtilen taşınmaz bulunamadı.");
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    return new ErrorResult("Güncelleme için belirtilen taşınmaz bulunamadı.");
+                    await transaction.RollbackAsync();
+                    return new ErrorResult("Taşınmaz Güncelleme Başarısız: Hata Mesajı : " + e.Message);
                 }
-            }
-            catch (Exception e)
-            {
-                return new ErrorResult("Taşınmaz Güncelleme Başarısız: Hata Mesajı : " + e.Message);
             }
         }
 

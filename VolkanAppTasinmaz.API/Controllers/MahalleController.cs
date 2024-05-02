@@ -23,7 +23,6 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public async Task<IDataResult<List<Mahalle>>> GetAll()
         {
-
             return await _mahalleService.GetAll();
         }
 

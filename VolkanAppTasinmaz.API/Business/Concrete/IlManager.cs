@@ -23,7 +23,6 @@ namespace Business.Concrete
             _context = context;
             _mapper = mapper;
         }
-
         public async Task<IDataResult<List<Il>>> GetAll()
         {
             try

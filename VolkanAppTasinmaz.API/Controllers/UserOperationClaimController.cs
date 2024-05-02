@@ -16,75 +16,40 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UserOperationClaimController : ControllerBase
     {
-
-        IUserOperationClaimService _userOperationClaimService;
+        private readonly IUserOperationClaimService _userOperationClaimService;
         public UserOperationClaimController(IUserOperationClaimService userOperationClaimService)
         {
             _userOperationClaimService = userOperationClaimService;
         }
 
         [HttpGet("getall")]
-        public IActionResult Get()
+        public async Task<IDataResult<List<UserOperationClaim>>> GetAll()
         {
-
-            var result = _userOperationClaimService.GetAll();
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userOperationClaimService.GetAll();
         }
 
         [HttpGet("getoperationbyuserid")]
-        public IActionResult GetByUserId(int userId)
+        public async Task<IDataResult<UserOperationClaim>> GetOperationClaimByUserId(int userId)
         {
-
-            var result = _userOperationClaimService.GetOperationClaimByUserId(userId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userOperationClaimService.GetOperationClaimByUserId(userId);
         }
 
         [HttpPost("add")]
-        public IActionResult Add(UserOperationClaim userOperationClaim)
+        public async Task<IResult> AddUserClaim(UserOperationClaim userOperationClaim)
         {
-            var result = _userOperationClaimService.AddUserClaim(userOperationClaim);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userOperationClaimService.AddUserClaim(userOperationClaim);
         }
 
         [HttpDelete("delete/{userOperationClaimUserId}")]
-        public IActionResult Delete(int userOperationClaimUserId)
+        public async Task<IResult> DeleteUserClaim(int userOperationClaimUserId)
         {
-
-            var result = _userOperationClaimService.DeleteUserClaim(userOperationClaimUserId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userOperationClaimService.DeleteUserClaim(userOperationClaimUserId);
         }
 
         [HttpPut("update")]
-        public IActionResult Update(UserOperationClaim userOperationClaim)
+        public async Task<IResult> UpdateUserClaim(UserOperationClaim userOperationClaim)
         {
-            var result = _userOperationClaimService.UpdateUserClaim(userOperationClaim);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-
-            return BadRequest(result);
+            return await _userOperationClaimService.UpdateUserClaim(userOperationClaim);
         }
-
     }
 }
