@@ -6,24 +6,22 @@ using System;
 using System.Text;
 using VolkanAppTasinmaz.API.Core.Entities.Concrete;
 using VolkanAppTasinmaz.API.Entities.DTOs;
+using System.Threading.Tasks;
 
 namespace Business.Abstract
 {
     public interface IUserService
     {
-        List<OperationClaim> GetClaims(User user);
-        void Add(User user);
-        User GetByMail(string email);
-        IDataResult<List<User>> GetAll();
-        IResult Delete(User user);
-
-        IResult Delete(int id);
-        IResult Update(User user);
-        IDataResult<User> GetById(int userId);
-        User GetUserById(int id);
-        IDataResult<User> GetByIdLogin(int userId);
-
-        IResult UpdateUser(UserUpdateDto userUpdateDto);
-
+        Task<IDataResult<List<OperationClaim>>> GetClaims(User user);
+        Task<IResult> Add(User user);
+        Task<IDataResult<User>> GetByMail(string email);
+        Task<IDataResult<List<User>>> GetAll();
+        Task<IResult> Delete(User user);
+        Task<IResult> Delete(int userId);
+        Task<IResult> Update(User user);
+        Task<IDataResult<User>> GetById(int userId);
+        Task<IDataResult<User>> GetUserById(int userId);
+        Task<IDataResult<User>> GetByIdLogin(int userId);
+        Task<IResult> UpdateUser(UserUpdateDto userUpdateDto);
     }
 }

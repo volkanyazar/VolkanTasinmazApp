@@ -11,7 +11,5 @@ namespace Business.Abstract
     {
         Task<IResult> Add(Log log);
         Task<IDataResult<List<Log>>> GetAll();
-
-
     }
 }

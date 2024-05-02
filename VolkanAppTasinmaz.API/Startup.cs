@@ -54,7 +54,8 @@ namespace VolkanAppTasinmaz.API
 
             services.
             AddAutoMapper(typeof(TasinmazProfile),
-                          typeof(IlceProfile));
+                          typeof(IlceProfile),
+                          typeof(UserProfile));
 
             //service ba��ml�l�klar� eklendi
             services.AddScoped<ITasinmazService, TasinmazManager>();
@@ -62,10 +63,10 @@ namespace VolkanAppTasinmaz.API
             services.AddScoped<IIlceService, IlceManager>();
             services.AddScoped<IMahalleService, MahalleManager>();
             services.AddSingleton<IUserDal, EfUserDal>();
-            services.AddSingleton<IUserService, UserManager>();
+            services.AddScoped<IUserService, UserManager>();
             services.AddSingleton<IUserOperationClaimDal, EfUserOperationClaim>();
-            services.AddSingleton<IUserOperationClaimService, UserOperationClaimManager>();
-            services.AddSingleton<IAuthService, AuthManager>();
+            services.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
+            services.AddScoped<IAuthService, AuthManager>();
             services.AddSingleton<ITokenHelper, JwtHelper>();
             services.AddSingleton<IInterceptorSelector, AspectInterceptorSelector>();
             services.AddScoped<ILogService, LogManager>();

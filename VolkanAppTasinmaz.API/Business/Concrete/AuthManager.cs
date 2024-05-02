@@ -1,4 +1,5 @@
-﻿using Business.Abstract;
+﻿using System.Threading.Tasks;
+using Business.Abstract;
 using Core.Entities.Concrete;
 using Core.Utilities;
 using Core.Utilities.Security.Hashing;
@@ -10,18 +11,24 @@ namespace Business.Concrete
 {
     public class AuthManager : IAuthService
     {
-        private IUserService _userService;
-        private ITokenHelper _tokenHelper;
+        private readonly IUserService _userService;
+        private readonly ITokenHelper _tokenHelper;
+        private readonly IUserOperationClaimService _userOperationClaimService;
 
-
-        public AuthManager(IUserService userService, ITokenHelper tokenHelper)
+        public AuthManager(IUserService userService, ITokenHelper tokenHelper, IUserOperationClaimService userOperationClaimService)
         {
             _userService = userService;
             _tokenHelper = tokenHelper;
+            _userOperationClaimService = userOperationClaimService;
         }
-
-        public IDataResult<User> Register(UserForRegisterDto userForRegisterDto, string password)
+        public async Task<IDataResult<AccessToken>> Register(UserForRegisterDto userForRegisterDto, string password)
         {
+            var userExists = await UserExists(userForRegisterDto.Email);
+            if (!userExists.Success)
+            {
+                return new ErrorDataResult<AccessToken>(userExists.Message); ;
+            }
+
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
             var user = new User
@@ -35,45 +42,52 @@ namespace Business.Concrete
                 Adres = userForRegisterDto.Adres,
                 Status = true
             };
-            _userService.Add(user);
-            return new SuccessDataResult<User>(user, "Kayıt oldu");
+
+            await _userService.Add(user);
+            await _userOperationClaimService.AddUserClaim(new UserOperationClaim
+            {
+                UserId = user.UserId,
+                OperationClaimId = userForRegisterDto.Role == "Admin" ? 1 : 2
+            });
+            var userToRegister = await CreateAccessToken(user);
+            return new SuccessDataResult<AccessToken>(userToRegister?.Data, "Kullanıcı Başarıyla Kayıt Oldu...");
         }
 
-
-        
-
-
-
-        public IDataResult<User> Login(UserForLoginDto userForLoginDto)
+        public async Task<IDataResult<AccessToken>> Login(UserForLoginDto userForLoginDto)
         {
-            var userToCheck = _userService.GetByMail(userForLoginDto.Email);
+            var userData = await _userService.GetByMail(userForLoginDto.Email);
+            var userToCheck = userData.Data;
             if (userToCheck == null)
             {
-                return new ErrorDataResult<User>("Kullanıcı bulunamadı");
+                return new ErrorDataResult<AccessToken>("Kullanıcı bulunamadı...");
             }
 
             if (!HashingHelper.VerifyPasswordHash(userForLoginDto.Password, userToCheck.PasswordHash, userToCheck.PasswordSalt))
             {
-                return new ErrorDataResult<User>("Parola hatalı");
+                return new ErrorDataResult<AccessToken>("Parola hatalı...");
             }
+            
+            var userToLogin = await CreateAccessToken(userToCheck);
 
-            return new SuccessDataResult<User>(userToCheck, "Başarılı giriş");
+            return new SuccessDataResult<AccessToken>(userToLogin?.Data, "Kullanıcı Girişi Başarılı...");
         }
 
-        public IResult UserExists(string email)
+        public async Task<IResult> UserExists(string email)
         {
-            if (_userService.GetByMail(email) != null)
+            var user = await _userService.GetByMail(email);
+            if (user?.Data != null)
             {
-                return new ErrorResult("Kullanıcı mevcut");
+                return new ErrorResult("Kullanıcı mevcut...");
             }
             return new SuccessResult();
         }
 
-        public IDataResult<AccessToken> CreateAccessToken(User user)
+        public async Task<IDataResult<AccessToken>> CreateAccessToken(User user)
         {
-            var claims = _userService.GetClaims(user);
-            var accessToken = _tokenHelper.CreateToken(user, claims);
-            return new SuccessDataResult<AccessToken>(accessToken, "Token oluştu");
+            var claims = await _userService.GetClaims(user);
+            var claimsData = claims.Data;
+            var accessToken = _tokenHelper.CreateToken(user, claimsData);
+            return new SuccessDataResult<AccessToken>(accessToken, "Token Başarıyla oluştu");
         }
     }
 }
