@@ -3,7 +3,6 @@ using Business.Abstract;
 using Core.Entities.Concrete;
 using Core.Utilities;
 using Core.Utilities.Security.Hashing;
-using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System;

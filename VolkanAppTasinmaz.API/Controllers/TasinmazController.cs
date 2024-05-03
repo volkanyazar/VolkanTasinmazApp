@@ -23,11 +23,13 @@ namespace VolkanAppTasinmaz.API.Controllers
     {
         private readonly ITasinmazService _tasinmazService;
         private readonly IUserService _userService;
+        private readonly ILogService _logService;
 
-        public TasinmazController(ITasinmazService productService, IUserService userService)
+        public TasinmazController(ITasinmazService productService, IUserService userService, ILogService logService)
         {
             _tasinmazService = productService;
             _userService = userService;
+            _logService = logService;
         }
 
         [HttpGet("getall")]
@@ -52,7 +54,7 @@ namespace VolkanAppTasinmaz.API.Controllers
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var user = await _userService.GetUserById(id);
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Eklendi",
                 durum = true,
@@ -71,7 +73,7 @@ namespace VolkanAppTasinmaz.API.Controllers
             var user = await _userService.GetUserById(id);
             var tasinmaz = _tasinmazService.GetById(id);
 
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Silindi ",
                 durum = true,
@@ -88,7 +90,7 @@ namespace VolkanAppTasinmaz.API.Controllers
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var user = await _userService.GetUserById(id);
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Güncellendi",
                 durum = true,

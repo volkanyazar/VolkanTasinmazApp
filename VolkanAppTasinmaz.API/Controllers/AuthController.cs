@@ -20,14 +20,14 @@ namespace WebAPI.Controllers
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
-        private readonly ITasinmazService _tasinmazService;
         private readonly IUserService _userService;
+        private readonly ILogService _logService;
 
-        public AuthController(IAuthService authService, ITasinmazService productService, IUserService userService)
+        public AuthController(IAuthService authService, IUserService userService, ILogService logService)
         {
             _authService = authService;
-            _tasinmazService = productService;
             _userService = userService;
+            _logService = logService;
         }
         [HttpPost("login")]
         public async Task<IDataResult<AccessToken>> Login(UserForLoginDto userForLoginDto)
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var result = await _authService.Login(userForLoginDto);
             var user = await _userService.GetByMail(userForLoginDto.Email);
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Sisteme Giriş Yapıldı",
                 durum = true,
@@ -52,14 +52,13 @@ namespace WebAPI.Controllers
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var result = await _authService.Register(userForRegisterDto, userForRegisterDto.Password);
-            var user = await _userService.GetByMail(userForRegisterDto.Email);
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kullanıcı Eklendi",
                 durum = true,
                 islemtipi = "Kullanıcı Ekleme İşlemi",
                 tarih = DateTime.Now,
-                userid = user.Data.UserId,
+                userid = id,
                 logip = HttpContext.Connection.RemoteIpAddress?.ToString()
             });
             return result;
