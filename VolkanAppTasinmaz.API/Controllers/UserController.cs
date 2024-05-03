@@ -21,12 +21,12 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ITasinmazService _tasinmazService;
         private readonly IUserService _userService;
-        public UserController(IUserService userService, ITasinmazService productService)
+        private readonly ILogService _logService;
+        public UserController(IUserService userService, ILogService logService)
         {
             _userService = userService;
-            _tasinmazService = productService;
+            _logService = logService;
         }
 
         [HttpGet("getall")]
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
         public async Task<IResult> DeleteUser(int id)
         {
             var userId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Silindi",
                 durum = true,
@@ -55,7 +55,7 @@ namespace WebAPI.Controllers
         public async Task<IResult> Delete(User user)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Silindi",
                 durum = true,
@@ -71,7 +71,7 @@ namespace WebAPI.Controllers
         public async Task<IResult> Update(User user)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Güncellendi",
                 durum = true,
@@ -87,7 +87,7 @@ namespace WebAPI.Controllers
         public async Task<IResult> UpdateUser(UserUpdateDto userUpdateDto)
         {
             var id = Convert.ToInt32(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _tasinmazService.AddLog(new Log
+            await _logService.Add(new Log
             {
                 aciklama = "Kayıt Güncellendi",
                 durum = true,

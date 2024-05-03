@@ -9,7 +9,6 @@ using Core.Utilities.Interceptors;
 using Core.Utilities.IoC;
 using Core.Utilities.Security.Encryption;
 using Core.Utilities.Security.JWT;
-using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -62,9 +61,7 @@ namespace VolkanAppTasinmaz.API
             services.AddScoped<IIlService, IlManager>();
             services.AddScoped<IIlceService, IlceManager>();
             services.AddScoped<IMahalleService, MahalleManager>();
-            services.AddSingleton<IUserDal, EfUserDal>();
             services.AddScoped<IUserService, UserManager>();
-            services.AddSingleton<IUserOperationClaimDal, EfUserOperationClaim>();
             services.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
             services.AddScoped<IAuthService, AuthManager>();
             services.AddSingleton<ITokenHelper, JwtHelper>();
