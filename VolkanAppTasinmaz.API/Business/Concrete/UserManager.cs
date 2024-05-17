@@ -257,28 +257,22 @@ namespace Business.Concrete
 
         public async Task<IResult> Delete(int userId)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
+            try
             {
-                try
-                {
-                    var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+                var userToDelete = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
 
-                    if (userToDelete == null)
-                    {
-                        await transaction.RollbackAsync();
-                        return new ErrorResult("Kullanıcı Bulunamadı");
-                    }
-                    _context.Users.Remove(userToDelete);
-                    await _userOperationClaimService.DeleteUserClaim(userToDelete.UserId);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                    return new SuccessResult(userToDelete.FirstName + " Kullanıcısı Başarıyla Silindi...");
-                }
-                catch (Exception e)
+                if (userToDelete == null)
                 {
-                    await transaction.RollbackAsync();
-                    return new ErrorResult("Kullanıcı Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
+                    return new ErrorResult("Kullanıcı Bulunamadı");
                 }
+                _context.Users.Remove(userToDelete);
+                await _userOperationClaimService.DeleteUserClaim(userToDelete.UserId);
+                await _context.SaveChangesAsync();
+                return new SuccessResult(userToDelete.FirstName + " Kullanıcısı Başarıyla Silindi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult("Kullanıcı Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
             }
         }
     }

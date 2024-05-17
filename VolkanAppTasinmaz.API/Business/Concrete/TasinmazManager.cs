@@ -68,27 +68,21 @@ namespace VolkanAppTasinmaz.API.Business.Concrete
 
         public async Task<IResult> Delete(int tasinmazId)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted))
+            try
             {
-                try
-                {
-                    var tasinmazToDelete = await _context.Tasinmazlar.Include(x => x.User).Include(x => x.Mahalle).ThenInclude(x => x.Ilce).ThenInclude(x => x.Il).Where(x => x.TasinmazId == tasinmazId).FirstOrDefaultAsync();
+                var tasinmazToDelete = await _context.Tasinmazlar.Include(x => x.User).Include(x => x.Mahalle).ThenInclude(x => x.Ilce).ThenInclude(x => x.Il).Where(x => x.TasinmazId == tasinmazId).FirstOrDefaultAsync();
 
-                    if (tasinmazToDelete == null)
-                    {
-                        await transaction.RollbackAsync();
-                        return new ErrorResult("Taşınmaz Bulunamadı");
-                    }
-                    _context.Tasinmazlar.Remove(tasinmazToDelete);
-                    await _context.SaveChangesAsync();
-                    await transaction.CommitAsync();
-                    return new SuccessResult("Taşınmaz Başarıyla Silindi...");
-                }
-                catch (Exception e)
+                if (tasinmazToDelete == null)
                 {
-                    await transaction.RollbackAsync();
-                    return new ErrorResult("Taşınmaz Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
+                    return new ErrorResult("Taşınmaz Bulunamadı");
                 }
+                _context.Tasinmazlar.Remove(tasinmazToDelete);
+                await _context.SaveChangesAsync();
+                return new SuccessResult("Taşınmaz Başarıyla Silindi...");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResult("Taşınmaz Silme İşlemi Başarısız : Hata Mesajı : " + e.Message);
             }
         }
 
