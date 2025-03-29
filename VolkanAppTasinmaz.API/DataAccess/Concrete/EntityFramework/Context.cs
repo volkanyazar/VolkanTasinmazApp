@@ -32,7 +32,7 @@ namespace DataAccess.Concrete.EntityFramework
 
         public DbSet<Mahalle> Mahalle { get; set; }
 
-        public DbSet<Log> Log { get; set; }
+        public DbSet<Log> Log { get; set; } //log
 
     }
 }
